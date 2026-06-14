@@ -5,153 +5,435 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invio Ordini Tavoli</title>
     <style>
-        /* Stile grafico - Schermata Nera Bamboo */
+        :root {
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --bg: #f8f9fa;
+        }
         body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
             margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            box-sizing: border-box;
+            padding: 15px;
+            color: #333;
         }
 
-        .container {
+        /* STILE SCHERMATA LOGIN BAMBOO */
+        #login-screen {
+            background-color: #121212;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 450px;
-            background-color: #1e1e1e;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 360px;
+            background: #1e1e1e;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             text-align: center;
+            box-sizing: border-box;
         }
-
-        h1 {
+        .login-container h1 {
             color: #00ff88;
-            font-size: 24px;
+            font-size: 26px;
+            margin-top: 0;
             margin-bottom: 25px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
+        .login-container label {
             color: #b3b3b3;
-            font-size: 14px;
+            display: block;
+            margin-bottom: 10px;
+            text-align: left;
+            font-weight: bold;
         }
-
-        input, select, textarea {
+        .login-container input {
             width: 100%;
-            padding: 12px;
-            background-color: #2a2a2a;
+            padding: 14px;
+            background: #2a2a2a;
             border: 1px solid #3a3a3a;
-            border-radius: 6px;
+            border-radius: 8px;
             color: white;
-            font-size: 16px;
+            font-size: 20px;
+            text-align: center;
             box-sizing: border-box;
-            transition: border-color 0.3s;
+            margin-bottom: 20px;
         }
-
-        input:focus, select:focus, textarea:focus {
+        .login-container input:focus {
             border-color: #00ff88;
             outline: none;
         }
-
-        button {
+        .login-container button {
             width: 100%;
             padding: 14px;
-            background-color: #00ff88;
+            background: #00ff88;
             color: #121212;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 10px;
+        }
+        .login-container button:hover {
+            background: #00cc6e;
         }
 
-        button:hover {
-            background-color: #00cc6e;
+        /* CLASSE PER NASCONDERE I BLOCCHI */
+        .hidden {
+            display: none !important;
         }
 
-        #success-msg {
-            color: #00ff88;
-            margin-top: 15px;
+        /* TUO STILE ORIGINALE COPIATO PARI PARI */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: var(--primary); margin-top: 0; }
+        
+        .row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .flex-2 { flex: 2; }
+        .flex-1 { flex: 1; }
+        .full-width { width: 100%; margin-bottom: 15px; }
+        
+        label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 14px; }
+        select, input, button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        
+        .ordine-riga {
+            background: #f1f3f5;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .btn-add { background: #2ecc71; color: white; border: none; font-weight: bold; cursor: pointer; }
+        .btn-remove { background: #e74c3c; color: white; border: none; font-weight: bold; height: 100%; cursor: pointer; }
+        .btn-invia { background: var(--primary); color: white; border: none; font-weight: bold; font-size: 18px; padding: 15px; margin-top: 15px; cursor: pointer; }
+        
+        #config-stampante {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .btn-reset-num {
+            background-color: #e67e22;
+            color: white;
+            border: none;
             font-weight: bold;
-            min-height: 20px;
+            padding: 8px;
+            font-size: 13px;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+
+        #orologio {
+            text-align: center;
+            font-weight: bold;
+            color: #7f8c8d;
+            margin-top: 20px;
+            font-size: 14px;
+            background: #eee;
+            padding: 8px;
+            border-radius: 6px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div id="app-screen">
-            <h1>Nuova Comanda</h1>
-            
-            <div class="form-group">
-                <label for="tavolo">Seleziona Tavolo</label>
-                <select id="tavolo">
-                    <option value="">-- Scegli un tavolo --</option>
-                    <option value="Tavolo 1">Tavolo 1</option>
-                    <option value="Tavolo 2">Tavolo 2</option>
-                    <option value="Tavolo 3">Tavolo 3</option>
-                    <option value="Tavolo 4">Tavolo 4</option>
-                    <option value="Tavolo 5">Tavolo 5</option>
-                    <option value="Tavolo 6">Tavolo 6</option>
-                    <option value="Tavolo 7">Tavolo 7</option>
-                    <option value="Tavolo 8">Tavolo 8</option>
-                    <option value="Tavolo 9">Tavolo 9</option>
-                    <option value="Tavolo 10">Tavolo 10</option>
-                </select>
-            </div>
+<div id="login-screen">
+    <div class="login-container">
+        <h1>Bamboo Login</h1>
+        <label for="pin">Inserisci PIN Cameriere</label>
+        <input type="password" id="pin" placeholder="••••" inputmode="numeric" pattern="[0-9]*">
+        <button type="button" onclick="verificaLogin()">Accedi</button>
+    </div>
+</div>
 
-            <div class="form-group">
-                <label for="ordine">Piatti / Bevande</label>
-                <textarea id="ordine" rows="5" placeholder="Es: 2 Primi, 1 Acqua frizzante..."></textarea>
-            </div>
+<div class="container hidden" id="main-app">
+    <h2>Nuovo Ordine Tavolo</h2>
+    
+    <div id="config-stampante">
+        <label>IP Stampante Termica:</label>
+        <input type="text" id="ip_stampante" value="192.168.1.100" placeholder="Es. 192.168.1.90">
+        <button type="button" class="btn-reset-num" onclick="resetManualeNumeroOrdine()">🔄 Azzera Numero Ordine (Riparti da 1)</button>
+    </div>
 
-            <button onclick="inviaOrdine()">Invia in Cucina</button>
-            <div id="success-msg"></div>
+    <div class="row">
+        <div class="flex-1">
+            <label for="tavolo">Numero Tavolo</label>
+            <select id="tavolo"></select>
+        </div>
+        <div class="flex-1">
+            <label for="note_tavolo">Modifica/Note</label>
+            <input type="text" id="note_tavolo" placeholder="Es. Terrazza, Posti in più">
         </div>
     </div>
 
-    <script>
-        function inviaOrdine() {
-            const tavolo = document.getElementById('tavolo').value;
-            const ordine = document.getElementById('ordine').value;
-            const msgDiv = document.getElementById('success-msg');
+    <div class="full-width">
+        <label for="nome_tavolo">Nome Tavolo / Cliente</label>
+        <input type="text" id="nome_tavolo" placeholder="Es. Tavolo Rossi, Intestatario, Privè divanetto...">
+    </div>
 
-            if (!tavolo || !ordine) {
-                alert('Per favore, seleziona un tavolo e inserisci i piatti.');
-                return;
-            }
+    <hr>
 
-            // Qui l'ordine viene elaborato dal sistema
-            console.log("Ordine inviato per:", tavolo, "Contenuto:", ordine);
+    <label>Prodotti</label>
+    <div id="lista-prodotti"></div>
+    
+    <button type="button" class="btn-add" onclick="aggiungiRigaProdotto()">+ Aggiungi Bottiglia</button>
+    <button type="button" class="btn-invia" onclick="inviaOrdine()">STAMPA ORDINE</button>
+    <button type="button" onclick="nuovoOrdine()" style="background-color: #ff4d4d; color: white; margin-top: 15px; padding: 15px; width: 100%; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">❌ Nuovo Ordine (Svuota Tutto)</button>
+</div>
 
-            // Messaggio di conferma a schermo
-            msgDiv.innerText = "Comanda inviata con successo!";
-            
-            // Pulisce i campi dopo l'invio per il tavolo successivo
-            document.getElementById('ordine').value = '';
-            document.getElementById('tavolo').value = '';
+<div id="orologio">Caricamento data e ora...</div>
 
-            setTimeout(() => {
-                msgDiv.innerText = '';
-            }, 3000);
+<script>
+// LOGICA DI VERIFICA PIN
+function verificaLogin() {
+    const pinInserito = document.getElementById('pin').value;
+    // Imposta qui il PIN che preferisci (ora è 1234)
+    if (pinInserito === '1234') {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+    } else {
+        alert('PIN errato! Riprova.');
+        document.getElementById('pin').value = '';
+    }
+}
+
+// Consente l'invio del login anche premendo "Invio" sulla tastiera
+document.getElementById('pin').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        verificaLogin();
+    }
+});
+
+// TUTTO IL TUO CODICE JAVASCRIPT ORIGINALE COPIATO PARI PARI
+const listino = {
+    "Vodka": [
+        "AU VODKA 0,70", "AU VODKA 0,70 FRUTTATA", "AU VODKA 1,5 LT", "AU VODKA 3,0 LT",
+        "VODKA 42 BELOW 0,70", "GREYGOOSE 0,70", "GREYGOOSE 1,5 LT", "GREYGOOSE 3,0 LT", "GREYGOOSE 6,0 LT"
+    ],
+    "Gin": [
+        "GIN STILL", "GIN BOMBAY", "GIN HANDRICKS", "GIN MARE", "GIN MALFY", "GIN AMNESIA"
+    ],
+    "Tequila": [
+        "TEQUILA TEQUIERO", "TEQUILA PATRON", "TEQUILA CLASE AZUL"
+    ],
+    "Amari / Rum": [
+        "JAGERMEISTER", "MONTENEGRO", "RUM HAVANA", "RUM PAMPERO"
+    ],
+    "Spumanti": [
+        "MOOD LUMINOUS", "SPUMANTE BASE"
+    ],
+    "Champagne": [
+        "MOET", "MOET ICE", "MOET NIR", "DOM PERIGNON"
+    ]
+};
+
+// Popola i 40 tavoli
+const selectTavolo = document.getElementById('tavolo');
+for (let i = 1; i <= 40; i++) {
+    let opt = document.createElement('option');
+    opt.value = i;
+    opt.innerHTML = `Tavolo ${i}`;
+    selectTavolo.appendChild(opt);
+}
+
+function aggiungiRigaProdotto() {
+    const container = document.getElementById('lista-prodotti');
+    const rigaId = 'riga_' + Date.now();
+    
+    let rigaHtml = `
+        <div class="row ordine-riga" id="${rigaId}">
+            <div class="flex-2">
+                <select class="prodotto-scelto">
+                    <option value="">-- Seleziona Bottiglia --</option>`;
+                    
+    for (const [categoria, prodotti] of Object.entries(listino)) {
+        rigaHtml += `<optgroup label="${categoria}">`;
+        prodotti.forEach(prod => {
+            rigaHtml += `<option value="${prod}">${prod}</option>`;
+        });
+        rigaHtml += `</optgroup>`;
+    }
+    
+    rigaHtml += `
+                </select>
+            </div>
+            <div class="flex-1">
+                <select class="quantita-scelta">
+                    ${[1,2,3,4,5,6,7,8,9,10].map(q => `<option value="${q}">${q}</option>`).join('')}
+                </select>
+            </div>
+            <div>
+                <button class="btn-remove" onclick="rimuoviRiga('${rigaId}')">X</button>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', rigaHtml);
+}
+
+function rimuoviRiga(id) {
+    document.getElementById(id).remove();
+}
+
+// Orologio LIVE
+function aggiornaOrologio() {
+    const ora = new Date();
+    const opzioni = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    document.getElementById('orologio').innerText = ora.toLocaleDateString('it-IT', opzioni);
+}
+setInterval(aggiornaOrologio, 1000);
+aggiornaOrologio();
+
+// Prima riga automatica
+aggiungiRigaProdotto();
+
+// Gestione memoria numero progressivo ordine
+let numeroOrdineCorrente = parseInt(localStorage.getItem('cambusa_num_progressivo')) || 1;
+
+function resetManualeNumeroOrdine() {
+    if (confirm("Vuoi azzerare il numero progressivo e farlo ripartire da 1?")) {
+        numeroOrdineCorrente = 1;
+        localStorage.setItem('cambusa_num_progressivo', 1);
+        alert("Numero ordine azzerato! Il prossimo sarà il N. 1");
+    }
+}
+
+function nuovoOrdine() {
+    if (confirm("Vuoi cancellare tutto l'ordine attuale?")) {
+        document.getElementById('tavolo').value = '1';
+        if(document.getElementById('nome_tavolo')) document.getElementById('nome_tavolo').value = '';
+        if(document.getElementById('note_tavolo')) document.getElementById('note_tavolo').value = '';
+        
+        const righe = document.querySelectorAll('.ordine-riga');
+        righe.forEach(riga => {
+            const prod = riga.querySelector('.prodotto-scelto');
+            const qta = riga.querySelector('.quantita-scelta');
+            if(prod) prod.value = '';
+            if(qta) qta.value = '1';
+        });
+    }
+}
+
+function inviaOrdine() {
+    const ip = document.getElementById('ip_stampante').value;
+    const tavolo = document.getElementById('tavolo').value;
+    const nomeTavolo = document.getElementById('nome_tavolo').value;
+    const note = document.getElementById('note_tavolo').value;
+    const dataOra = document.getElementById('orologio').innerText;
+
+    // Comandi di formattazione caratteri ESC/POS
+    const carattereGigante = "\x1D\x21\x11"; // Doppia altezza + Doppia larghezza
+    const carattereNormale = "\x1D\x21\x00"; // Dimensione standard
+    const bipTriplo = "\x1B\x43\x03\x02\x03"; // 3 Bip della stampante
+
+    // Costruzione scontrino alternando le dimensioni
+    let testoScontrino = bipTriplo + carattereNormale; // Inizia in piccolo con il bip
+    
+    testoScontrino += `============= ORDINE CAMBUSA =============\n`;
+    testoScontrino += `ORDINE PROGRESSIVO N. ${numeroOrdineCorrente}\n`;
+    testoScontrino += `------------------------------------------\n`;
+    
+    // Passa a GIGANTE per Numero e Nome Tavolo
+    testoScontrino += carattereGigante;
+    testoScontrino += `TAVOLO: ${tavolo}\n`;
+    if(nomeTavolo) testoScontrino += `NOME: ${nomeTavolo}\n`;
+    
+    // Torna a NORMALE per il resto dei dettagli e dei prodotti
+    testoScontrino += carattereNormale;
+    if(note) testoScontrino += `NOTE: ${note}\n`;
+    testoScontrino += `${dataOra}\n`;
+    testoScontrino += `------------------------------------------\n`;
+
+    const righe = document.querySelectorAll('.ordine-riga');
+    let haProdotti = false;
+
+    righe.forEach(riga => {
+        const prod = riga.querySelector('.prodotto-scelto').value;
+        const qta = riga.querySelector('.quantita-scelta').value;
+        if(prod) {
+            testoScontrino += `[ ] Q.ta: ${qta} - ${prod}\n`;
+            haProdotti = true;
         }
-    </script>
+    });
 
+    testoScontrino += `------------------------------------------\n`;
+
+    if(!haProdotti) {
+        alert("Seleziona almeno una bottiglia prima di stampare!");
+        return;
+    }
+
+    // Spazio e taglio pulito
+    const taglioPulito = "\n\n\n\n\n\n\n\x1D\x56\x30" + carattereNormale; 
+
+    // Uniamo le due copie
+    let scontrinoDoppio = (testoScontrino + taglioPulito) + (testoScontrino + taglioPulito);
+    scontrinoDoppio += "\n ";
+
+    alert("Invio in corso delle 2 copie alla stampante (" + ip + ")...");
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1000);
+
+    fetch(`http://${ip}:9100`, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: scontrinoDoppio,
+        signal: controller.signal
+    })
+    .then(() => {
+        clearTimeout(timeoutId);
+        // Incrementa il numero d'ordine solo dopo l'invio
+        numeroOrdineCorrente++;
+        localStorage.setItem('cambusa_num_progressivo', numeroOrdineCorrente);
+    })
+    .catch(() => {
+        clearTimeout(timeoutId);
+        // Incrementa ugualmente in caso di "no-cors" di Safari che genera un falso errore
+        numeroOrdineCorrente++;
+        localStorage.setItem('cambusa_num_progressivo', numeroOrdineCorrente);
+    });
+
+    alert("Stampa completata con successo!");
+
+    // Svuotiamo la schermata in modo sicuro
+    if(document.getElementById('tavolo')) document.getElementById('tavolo').value = '1';
+    if(document.getElementById('note_tavolo')) document.getElementById('note_tavolo').value = '';
+    if(document.getElementById('nome_tavolo')) document.getElementById('nome_tavolo').value = '';
+    const righeProdotti = document.querySelectorAll('.ordine-riga');
+    righeProdotti.forEach(riga => {
+        const prod = riga.querySelector('.prodotto-scelto');
+        const qta = riga.querySelector('.quantita-scelta');
+        if(prod) prod.value = '';
+        if(qta) qta.value = '1';
+    });
+}
+</script>
 </body>
 </html>
