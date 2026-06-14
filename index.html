@@ -37,7 +37,7 @@
             background: #1e1e1e;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             text-align: center;
             box-sizing: border-box;
         }
@@ -163,6 +163,7 @@
 </head>
 <body>
 
+<!-- SCHERMATA DI LOGIN INSERITA IN CIMA -->
 <div id="login-screen">
     <div class="login-container">
         <h1>Bamboo Login</h1>
@@ -172,19 +173,29 @@
     </div>
 </div>
 
+<!-- LA TUA APP ORIGINALE (Inizialmente nascosta con la classe hidden) -->
 <div class="container hidden" id="main-app">
     <h2>Nuovo Ordine Tavolo</h2>
     
     <div id="config-stampante">
         <label>IP Stampante Termica:</label>
         <input type="text" id="ip_stampante" value="192.168.1.100" placeholder="Es. 192.168.1.90">
+        <!-- TASTO RESET ORDINI AGGIUNTO -->
         <button type="button" class="btn-reset-num" onclick="resetManualeNumeroOrdine()">🔄 Azzera Numero Ordine (Riparti da 1)</button>
     </div>
 
     <div class="row">
+        <!-- SELEZIONE NUMERO TAVOLO + BOX PER SELEZIONE SEZIONE A / B -->
         <div class="flex-1">
             <label for="tavolo">Numero Tavolo</label>
-            <select id="tavolo"></select>
+            <div style="display: flex; gap: 5px;">
+                <select id="tavolo" style="flex: 2;"></select>
+                <select id="tavolo_lettera" style="flex: 1; font-weight: bold; color: var(--accent);">
+                    <option value="">-</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                </select>
+            </div>
         </div>
         <div class="flex-1">
             <label for="note_tavolo">Modifica/Note</label>
@@ -210,11 +221,10 @@
 <div id="orologio">Caricamento data e ora...</div>
 
 <script>
-// LOGICA DI VERIFICA PIN
+// LOGICA DI VERIFICA PIN MODIFICATA SU 1801
 function verificaLogin() {
     const pinInserito = document.getElementById('pin').value;
-    // Imposta qui il PIN che preferisci (ora è 1234)
-    if (pinInserito === '1234') {
+    if (pinInserito === '1801') {
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('main-app').classList.remove('hidden');
     } else {
@@ -327,6 +337,7 @@ function resetManualeNumeroOrdine() {
 function nuovoOrdine() {
     if (confirm("Vuoi cancellare tutto l'ordine attuale?")) {
         document.getElementById('tavolo').value = '1';
+        document.getElementById('tavolo_lettera').value = '';
         if(document.getElementById('nome_tavolo')) document.getElementById('nome_tavolo').value = '';
         if(document.getElementById('note_tavolo')) document.getElementById('note_tavolo').value = '';
         
@@ -342,7 +353,12 @@ function nuovoOrdine() {
 
 function inviaOrdine() {
     const ip = document.getElementById('ip_stampante').value;
-    const tavolo = document.getElementById('tavolo').value;
+    const tavoloNumero = document.getElementById('tavolo').value;
+    const tavoloLettera = document.getElementById('tavolo_lettera').value;
+    
+    // Combina il numero del tavolo con la lettera (es: 25 + B = 25B)
+    const tavoloCompleto = tavoloNumero + tavoloLettera;
+    
     const nomeTavolo = document.getElementById('nome_tavolo').value;
     const note = document.getElementById('note_tavolo').value;
     const dataOra = document.getElementById('orologio').innerText;
@@ -361,7 +377,7 @@ function inviaOrdine() {
     
     // Passa a GIGANTE per Numero e Nome Tavolo
     testoScontrino += carattereGigante;
-    testoScontrino += `TAVOLO: ${tavolo}\n`;
+    testoScontrino += `TAVOLO: ${tavoloCompleto}\n`;
     if(nomeTavolo) testoScontrino += `NOME: ${nomeTavolo}\n`;
     
     // Torna a NORMALE per il resto dei dettagli e dei prodotti
@@ -424,6 +440,7 @@ function inviaOrdine() {
 
     // Svuotiamo la schermata in modo sicuro
     if(document.getElementById('tavolo')) document.getElementById('tavolo').value = '1';
+    if(document.getElementById('tavolo_lettera')) document.getElementById('tavolo_lettera').value = '';
     if(document.getElementById('note_tavolo')) document.getElementById('note_tavolo').value = '';
     if(document.getElementById('nome_tavolo')) document.getElementById('nome_tavolo').value = '';
     const righeProdotti = document.querySelectorAll('.ordine-riga');
