@@ -130,10 +130,8 @@
         .btn-remove { background: #e74c3c; color: white; border: none; font-weight: bold; height: 100%; cursor: pointer; }
         .btn-invia { background: var(--primary); color: white; border: none; font-weight: bold; font-size: 18px; padding: 15px; margin-top: 15px; cursor: pointer; }
         
-        /* BOX STAMPANTE NASCOSTO */
-        #config-stampante {
-            display: none !important;
-        }
+        /* BOTTONE RESET PROGRESSIVO ORIGINALE */
+        .btn-reset-progressivo { background: #34495e; color: white; border: none; font-weight: bold; margin-top: 10px; cursor: pointer; }
 
         /* STILI PER I TASTI REPORT */
         .btn-report-live {
@@ -173,6 +171,7 @@
 </head>
 <body>
 
+<!-- SCHERMATA DI LOGIN -->
 <div id="login-screen">
     <div class="login-container">
         <h1>Bamboo Login</h1>
@@ -182,6 +181,7 @@
     </div>
 </div>
 
+<!-- APP PRINCIPALE -->
 <div class="container hidden" id="main-app">
     <h2>Nuovo Ordine Tavolo</h2>
     
@@ -220,12 +220,16 @@
     <button type="button" class="btn-add" onclick="aggiungiRigaProdotto()">+ Aggiungi Bottiglia</button>
     <button type="button" class="btn-invia" onclick="inviaOrdine()">STAMPA ORDINE</button>
     
+    <!-- IL TASTO DI RESET MANUALE PROGRESSIVO RIPRISTINATO COME ALL'INIZIO -->
+    <button type="button" class="btn-reset-progressivo" onclick="resetProgressivoManuale()">🔄 Reset Numero Progressivo Ordine a 1</button>
+    
+    <!-- SEZIONE PULSANTI REPORT -->
     <div class="row" style="margin-top: 15px;">
         <button type="button" class="btn-report-live" style="flex: 1;" onclick="mostraResocontoLive()">📊 Resoconto Live</button>
         <button type="button" class="btn-report-stampa" style="flex: 1;" onclick="stampaReportFineSerata()">🖨️ Stampa Report Fine Serata</button>
     </div>
 
-    <button type="button" onclick="nuovoOrdine()" style="background-color: #ff4d4d; color: white; margin-top: 15px; padding: 15px; width: 100%; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">❌ Nuovo Ordine (Svuota Tutto)</button>
+    <button type="button" onclick="nuovoOrdine()" style="background-color: #ff4d4d; color: white; margin-top: 15px; padding: 15px; width: 100%; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">❌ Svuota Campi Schermo</button>
 </div>
 
 <div id="orologio">Caricamento data e ora...</div>
@@ -329,8 +333,17 @@ aggiungiRigaProdotto();
 
 let numeroOrdineCorrente = parseInt(localStorage.getItem('cambusa_num_progressivo')) || 1;
 
+// FUNZIONE DEDICATA AL RESET DEL PROGRESSIVO
+function resetProgressivoManuale() {
+    if (confirm("Vuoi azzerare il numero d'ordine progressivo e farlo ripartire da 1?")) {
+        numeroOrdineCorrente = 1;
+        localStorage.setItem('cambusa_num_progressivo', 1);
+        alert("Fatto! Il prossimo scontrino stampato sarà l'Ordine N. 1");
+    }
+}
+
 function nuovoOrdine() {
-    if (confirm("Vuoi cancellare tutto l'ordine attuale?")) {
+    if (confirm("Vuoi svuotare i dati inseriti a schermo?")) {
         document.getElementById('tavolo').value = '1';
         document.getElementById('tavolo_lettera').value = '';
         if(document.getElementById('nome_tavolo')) document.getElementById('nome_tavolo').value = '';
@@ -354,7 +367,6 @@ function salvaStoricoBottiglie(storico) {
     localStorage.setItem('cambusa_storico_bottiglie', JSON.stringify(storico));
 }
 
-// LOGICA LOGISTICA COMPLETA SOFT DRINK AGGIORNATA CON LA TEQUILA (POMPELMO)
 function calcolaSoftDrink(storicoBottiglie) {
     let tonicaTotale = 0;
     let lemonTotale = 0;
@@ -365,12 +377,10 @@ function calcolaSoftDrink(storicoBottiglie) {
     for (const [bottiglia, qta] of Object.entries(storicoBottiglie)) {
         const nome = bottiglia.toUpperCase();
         
-        // 1. GIN: 3 Lemon e 3 Toniche
         if (nome.includes("GIN") || nome.includes("STILL") || nome.includes("BOMBAY") || nome.includes("HANDRICKS") || nome.includes("MARE") || nome.includes("MALFY") || nome.includes("AMNESIA")) {
             lemonTotale += (3 * qta);
             tonicaTotale += (3 * qta);
         } 
-        // 2. VODKE: Lemon + Red Bull in proporzione ai litri
         else if (nome.includes("VODKA") || nome.includes("BELOW") || nome.includes("GREYGOOSE") || nome.includes("AU VODKA")) {
             if (nome.includes("1,5 LT") || nome.includes("1.5LT")) {
                 lemonTotale += (6 * qta);
@@ -382,24 +392,19 @@ function calcolaSoftDrink(storicoBottiglie) {
                 lemonTotale += (24 * qta);
                 redbullTotale += (24 * qta);
             } else {
-                // Standard 0,70
                 lemonTotale += (3 * qta);
                 redbullTotale += (3 * qta);
             }
         }
-        // 3. RUM: 6 Coca-Cola
         else if (nome.includes("RUM") || nome.includes("HAVANA") || nome.includes("PAMPERO")) {
             cocacolaTotale += (6 * qta);
         }
-        // 4. JAGERMEISTER: 6 Red Bull
         else if (nome.includes("JAGERMEISTER")) {
             redbullTotale += (6 * qta);
         }
-        // 5. MONTENEGRO: 6 Coca-Cola
         else if (nome.includes("MONTENEGRO")) {
             cocacolaTotale += (6 * qta);
         }
-        // 6. TEQUILA: 6 Pompelmo
         else if (nome.includes("TEQUILA") || nome.includes("TEQUIERO") || nome.includes("PATRON") || nome.includes("AZUL")) {
             pompelmoTotale += (6 * qta);
         }
