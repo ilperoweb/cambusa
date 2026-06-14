@@ -130,23 +130,33 @@
         .btn-remove { background: #e74c3c; color: white; border: none; font-weight: bold; height: 100%; cursor: pointer; }
         .btn-invia { background: var(--primary); color: white; border: none; font-weight: bold; font-size: 18px; padding: 15px; margin-top: 15px; cursor: pointer; }
         
+        /* BOX STAMPANTE NASCOSTO GRAFICAMENTE MA ATTIVO */
         #config-stampante {
-            background: #e9ecef;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 12px;
+            display: none !important;
         }
 
-        .btn-reset-num {
-            background-color: #e67e22;
+        /* STILI PER I TASTI REPORT */
+        .btn-report-live {
+            background-color: #3498db;
             color: white;
             border: none;
             font-weight: bold;
-            padding: 8px;
-            font-size: 13px;
-            margin-top: 8px;
+            padding: 12px;
+            font-size: 15px;
+            margin-top: 10px;
             cursor: pointer;
+            border-radius: 8px;
+        }
+        .btn-report-stampa {
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            font-weight: bold;
+            padding: 12px;
+            font-size: 15px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 8px;
         }
 
         #orologio {
@@ -163,7 +173,7 @@
 </head>
 <body>
 
-<!-- SCHERMATA DI LOGIN INSERITA IN CIMA -->
+<!-- SCHERMATA DI LOGIN -->
 <div id="login-screen">
     <div class="login-container">
         <h1>Bamboo Login</h1>
@@ -173,19 +183,16 @@
     </div>
 </div>
 
-<!-- LA TUA APP ORIGINALE (Inizialmente nascosta con la classe hidden) -->
+<!-- APP PRINCIPALE -->
 <div class="container hidden" id="main-app">
     <h2>Nuovo Ordine Tavolo</h2>
     
+    <!-- INPUT IP STAMPANTE SILENZIOSO (Invisibile ma legge il valore) -->
     <div id="config-stampante">
-        <label>IP Stampante Termica:</label>
-        <input type="text" id="ip_stampante" value="192.168.1.100" placeholder="Es. 192.168.1.90">
-        <!-- TASTO RESET ORDINI AGGIUNTO -->
-        <button type="button" class="btn-reset-num" onclick="resetManualeNumeroOrdine()">🔄 Azzera Numero Ordine (Riparti da 1)</button>
+        <input type="text" id="ip_stampante" value="192.168.1.100">
     </div>
 
     <div class="row">
-        <!-- SELEZIONE NUMERO TAVOLO + BOX PER SELEZIONE SEZIONE A / B -->
         <div class="flex-1">
             <label for="tavolo">Numero Tavolo</label>
             <div style="display: flex; gap: 5px;">
@@ -215,13 +222,20 @@
     
     <button type="button" class="btn-add" onclick="aggiungiRigaProdotto()">+ Aggiungi Bottiglia</button>
     <button type="button" class="btn-invia" onclick="inviaOrdine()">STAMPA ORDINE</button>
+    
+    <!-- SEZIONE PULSANTI REPORT -->
+    <div class="row" style="margin-top: 15px;">
+        <button type="button" class="btn-report-live" style="flex: 1;" onclick="mostraResocontoLive()">📊 Resoconto Live</button>
+        <button type="button" class="btn-report-stampa" style="flex: 1;" onclick="stampaReportFineSerata()">🖨️ Stampa Report Fine Serata</button>
+    </div>
+
     <button type="button" onclick="nuovoOrdine()" style="background-color: #ff4d4d; color: white; margin-top: 15px; padding: 15px; width: 100%; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">❌ Nuovo Ordine (Svuota Tutto)</button>
 </div>
 
 <div id="orologio">Caricamento data e ora...</div>
 
 <script>
-// LOGICA DI VERIFICA PIN MODIFICATA SU 1801
+// VERIFICA PIN (1801)
 function verificaLogin() {
     const pinInserito = document.getElementById('pin').value;
     if (pinInserito === '1801') {
@@ -233,14 +247,12 @@ function verificaLogin() {
     }
 }
 
-// Consente l'invio del login anche premendo "Invio" sulla tastiera
 document.getElementById('pin').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         verificaLogin();
     }
 });
 
-// TUTTO IL TUO CODICE JAVASCRIPT ORIGINALE COPIATO PARI PARI
 const listino = {
     "Vodka": [
         "AU VODKA 0,70", "AU VODKA 0,70 FRUTTATA", "AU VODKA 1,5 LT", "AU VODKA 3,0 LT",
@@ -320,19 +332,9 @@ function aggiornaOrologio() {
 setInterval(aggiornaOrologio, 1000);
 aggiornaOrologio();
 
-// Prima riga automatica
 aggiungiRigaProdotto();
 
-// Gestione memoria numero progressivo ordine
 let numeroOrdineCorrente = parseInt(localStorage.getItem('cambusa_num_progressivo')) || 1;
-
-function resetManualeNumeroOrdine() {
-    if (confirm("Vuoi azzerare il numero progressivo e farlo ripartire da 1?")) {
-        numeroOrdineCorrente = 1;
-        localStorage.setItem('cambusa_num_progressivo', 1);
-        alert("Numero ordine azzerato! Il prossimo sarà il N. 1");
-    }
-}
 
 function nuovoOrdine() {
     if (confirm("Vuoi cancellare tutto l'ordine attuale?")) {
@@ -351,50 +353,120 @@ function nuovoOrdine() {
     }
 }
 
+function ottieniStoricoBottiglie() {
+    return JSON.parse(localStorage.getItem('cambusa_storico_bottiglie')) || {};
+}
+
+function salvaStoricoBottiglie(storico) {
+    localStorage.setItem('cambusa_storico_bottiglie', JSON.stringify(storico));
+}
+
+function mostraResocontoLive() {
+    const storico = ottieniStoricoBottiglie();
+    let messaggio = "📊 RESOCONTO LIVE BOTTIGLIE USCITE:\n\n";
+    
+    if (Object.keys(storico).length === 0) {
+        messaggio += "Nessuna bottiglia è ancora uscita stasera.";
+    } else {
+        for (const [bottiglia, qta] of Object.entries(storico)) {
+            messaggio += `• ${bottiglia}: ${qta} pz\n`;
+        }
+    }
+    alert(messaggio);
+}
+
+function stampaReportFineSerata() {
+    const storico = ottieniStoricoBottiglie();
+    
+    if (Object.keys(storico).length === 0) {
+        alert("Impossibile stampare: nessuna bottiglia registrata nello storico di stasera.");
+        return;
+    }
+
+    if (!confirm("Vuoi stampare il Report Finale e AZZERARE il conteggio per la prossima serata?")) {
+        return;
+    }
+
+    const ip = document.getElementById('ip_stampante').value;
+    const dataOra = document.getElementById('orologio').innerText;
+
+    // CODICE SCONTRINO RILEGATO SOLO TESTUALE (NIENTE CODICI STRANI)
+    let reportTesto = "";
+    reportTesto += `==========================================\n`;
+    reportTesto += `            REPORT FINE SERATA            \n`;
+    reportTesto += `==========================================\n`;
+    reportTesto += `${dataOra}\n`;
+    reportTesto += `------------------------------------------\n`;
+    reportTesto += `RIEPILOGO TOTALE BOTTIGLIE CONSEGNATE:\n\n`;
+
+    for (const [bottiglia, qta] of Object.entries(storico)) {
+        reportTesto += `[ ] Q.ta: ${qta} - ${bottiglia}\n`;
+    }
+
+    reportTesto += `------------------------------------------\n`;
+    reportTesto += `            Fine del Report.              \n`;
+    reportTesto += `\n\n\n\n\n\n\n`; 
+
+    alert("Invio del Report di fine serata alla stampante (" + ip + ")...");
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1000);
+
+    fetch(`http://${ip}:9100`, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: reportTesto,
+        signal: controller.signal
+    })
+    .then(() => {
+        clearTimeout(timeoutId);
+        localStorage.removeItem('cambusa_storico_bottiglie');
+        alert("Report stampato! Storico bottiglie azzerato per la prossima serata.");
+    })
+    .catch(() => {
+        clearTimeout(timeoutId);
+        localStorage.removeItem('cambusa_storico_bottiglie');
+        alert("Report inviato! Storico bottiglie azzerato per la prossima serata.");
+    });
+}
+
 function inviaOrdine() {
     const ip = document.getElementById('ip_stampante').value;
     const tavoloNumero = document.getElementById('tavolo').value;
     const tavoloLettera = document.getElementById('tavolo_lettera').value;
-    
-    // Combina il numero del tavolo con la lettera (es: 25 + B = 25B)
     const tavoloCompleto = tavoloNumero + tavoloLettera;
     
     const nomeTavolo = document.getElementById('nome_tavolo').value;
     const note = document.getElementById('note_tavolo').value;
     const dataOra = document.getElementById('orologio').innerText;
 
-    // Comandi di formattazione caratteri ESC/POS
-    const carattereGigante = "\x1D\x21\x11"; // Doppia altezza + Doppia larghezza
-    const carattereNormale = "\x1D\x21\x00"; // Dimensione standard
-    const bipTriplo = "\x1B\x43\x03\x02\x03"; // 3 Bip della stampante
-
-    // Costruzione scontrino alternando le dimensioni
-    let testoScontrino = bipTriplo + carattereNormale; // Inizia in piccolo con il bip
-    
+    // PULIZIA DELLE SCRITTE STRANE: SOLO TESTO STANDARD SENZA ESC/POS
+    let testoScontrino = "";
     testoScontrino += `============= ORDINE CAMBUSA =============\n`;
     testoScontrino += `ORDINE PROGRESSIVO N. ${numeroOrdineCorrente}\n`;
     testoScontrino += `------------------------------------------\n`;
-    
-    // Passa a GIGANTE per Numero e Nome Tavolo
-    testoScontrino += carattereGigante;
     testoScontrino += `TAVOLO: ${tavoloCompleto}\n`;
     if(nomeTavolo) testoScontrino += `NOME: ${nomeTavolo}\n`;
-    
-    // Torna a NORMALE per il resto dei dettagli e dei prodotti
-    testoScontrino += carattereNormale;
     if(note) testoScontrino += `NOTE: ${note}\n`;
     testoScontrino += `${dataOra}\n`;
     testoScontrino += `------------------------------------------\n`;
 
     const righe = document.querySelectorAll('.ordine-riga');
     let haProdotti = false;
+    const storicoAttuale = ottieniStoricoBottiglie();
 
     righe.forEach(riga => {
         const prod = riga.querySelector('.prodotto-scelto').value;
-        const qta = riga.querySelector('.quantita-scelta').value;
+        const qta = parseInt(riga.querySelector('.quantita-scelta').value) || 1;
         if(prod) {
             testoScontrino += `[ ] Q.ta: ${qta} - ${prod}\n`;
             haProdotti = true;
+            
+            if(storicoAttuale[prod]) {
+                storicoAttuale[prod] += qta;
+            } else {
+                storicoAttuale[prod] = qta;
+            }
         }
     });
 
@@ -405,12 +477,10 @@ function inviaOrdine() {
         return;
     }
 
-    // Spazio e taglio pulito
-    const taglioPulito = "\n\n\n\n\n\n\n\x1D\x56\x30" + carattereNormale; 
+    salvaStoricoBottiglie(storicoAttuale);
 
-    // Uniamo le due copie
-    let scontrinoDoppio = (testoScontrino + taglioPulito) + (testoScontrino + taglioPulito);
-    scontrinoDoppio += "\n ";
+    const righeSpazioVuoto = "\n\n\n\n\n\n\n"; 
+    let scontrinoDoppio = (testoScontrino + righeSpazioVuoto) + (testoScontrino + righeSpazioVuoto);
 
     alert("Invio in corso delle 2 copie alla stampante (" + ip + ")...");
 
@@ -425,20 +495,17 @@ function inviaOrdine() {
     })
     .then(() => {
         clearTimeout(timeoutId);
-        // Incrementa il numero d'ordine solo dopo l'invio
         numeroOrdineCorrente++;
         localStorage.setItem('cambusa_num_progressivo', numeroOrdineCorrente);
     })
     .catch(() => {
         clearTimeout(timeoutId);
-        // Incrementa ugualmente in caso di "no-cors" di Safari che genera un falso errore
         numeroOrdineCorrente++;
         localStorage.setItem('cambusa_num_progressivo', numeroOrdineCorrente);
     });
 
     alert("Stampa completata con successo!");
 
-    // Svuotiamo la schermata in modo sicuro
     if(document.getElementById('tavolo')) document.getElementById('tavolo').value = '1';
     if(document.getElementById('tavolo_lettera')) document.getElementById('tavolo_lettera').value = '';
     if(document.getElementById('note_tavolo')) document.getElementById('note_tavolo').value = '';
