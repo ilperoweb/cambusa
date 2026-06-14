@@ -130,7 +130,7 @@
         .btn-remove { background: #e74c3c; color: white; border: none; font-weight: bold; height: 100%; cursor: pointer; }
         .btn-invia { background: var(--primary); color: white; border: none; font-weight: bold; font-size: 18px; padding: 15px; margin-top: 15px; cursor: pointer; }
         
-        /* BOX STAMPANTE NASCOSTO GRAFICAMENTE MA ATTIVO */
+        /* BOX STAMPANTE NASCOSTO */
         #config-stampante {
             display: none !important;
         }
@@ -173,7 +173,6 @@
 </head>
 <body>
 
-<!-- SCHERMATA DI LOGIN -->
 <div id="login-screen">
     <div class="login-container">
         <h1>Bamboo Login</h1>
@@ -183,11 +182,9 @@
     </div>
 </div>
 
-<!-- APP PRINCIPALE -->
 <div class="container hidden" id="main-app">
     <h2>Nuovo Ordine Tavolo</h2>
     
-    <!-- INPUT IP STAMPANTE SILENZIOSO (Invisibile ma legge il valore) -->
     <div id="config-stampante">
         <input type="text" id="ip_stampante" value="192.168.1.100">
     </div>
@@ -223,7 +220,6 @@
     <button type="button" class="btn-add" onclick="aggiungiRigaProdotto()">+ Aggiungi Bottiglia</button>
     <button type="button" class="btn-invia" onclick="inviaOrdine()">STAMPA ORDINE</button>
     
-    <!-- SEZIONE PULSANTI REPORT -->
     <div class="row" style="margin-top: 15px;">
         <button type="button" class="btn-report-live" style="flex: 1;" onclick="mostraResocontoLive()">📊 Resoconto Live</button>
         <button type="button" class="btn-report-stampa" style="flex: 1;" onclick="stampaReportFineSerata()">🖨️ Stampa Report Fine Serata</button>
@@ -235,7 +231,6 @@
 <div id="orologio">Caricamento data e ora...</div>
 
 <script>
-// VERIFICA PIN (1801)
 function verificaLogin() {
     const pinInserito = document.getElementById('pin').value;
     if (pinInserito === '1801') {
@@ -275,7 +270,6 @@ const listino = {
     ]
 };
 
-// Popola i 40 tavoli
 const selectTavolo = document.getElementById('tavolo');
 for (let i = 1; i <= 40; i++) {
     let opt = document.createElement('option');
@@ -323,7 +317,6 @@ function rimuoviRiga(id) {
     document.getElementById(id).remove();
 }
 
-// Orologio LIVE
 function aggiornaOrologio() {
     const ora = new Date();
     const opzioni = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
@@ -361,16 +354,78 @@ function salvaStoricoBottiglie(storico) {
     localStorage.setItem('cambusa_storico_bottiglie', JSON.stringify(storico));
 }
 
+// LOGICA LOGISTICA COMPLETA SOFT DRINK AGGIORNATA CON LA TEQUILA (POMPELMO)
+function calcolaSoftDrink(storicoBottiglie) {
+    let tonicaTotale = 0;
+    let lemonTotale = 0;
+    let redbullTotale = 0;
+    let cocacolaTotale = 0;
+    let pompelmoTotale = 0;
+
+    for (const [bottiglia, qta] of Object.entries(storicoBottiglie)) {
+        const nome = bottiglia.toUpperCase();
+        
+        // 1. GIN: 3 Lemon e 3 Toniche
+        if (nome.includes("GIN") || nome.includes("STILL") || nome.includes("BOMBAY") || nome.includes("HANDRICKS") || nome.includes("MARE") || nome.includes("MALFY") || nome.includes("AMNESIA")) {
+            lemonTotale += (3 * qta);
+            tonicaTotale += (3 * qta);
+        } 
+        // 2. VODKE: Lemon + Red Bull in proporzione ai litri
+        else if (nome.includes("VODKA") || nome.includes("BELOW") || nome.includes("GREYGOOSE") || nome.includes("AU VODKA")) {
+            if (nome.includes("1,5 LT") || nome.includes("1.5LT")) {
+                lemonTotale += (6 * qta);
+                redbullTotale += (6 * qta);
+            } else if (nome.includes("3,0 LT") || nome.includes("3LT")) {
+                lemonTotale += (12 * qta);
+                redbullTotale += (12 * qta);
+            } else if (nome.includes("6,0 LT") || nome.includes("6LT")) {
+                lemonTotale += (24 * qta);
+                redbullTotale += (24 * qta);
+            } else {
+                // Standard 0,70
+                lemonTotale += (3 * qta);
+                redbullTotale += (3 * qta);
+            }
+        }
+        // 3. RUM: 6 Coca-Cola
+        else if (nome.includes("RUM") || nome.includes("HAVANA") || nome.includes("PAMPERO")) {
+            cocacolaTotale += (6 * qta);
+        }
+        // 4. JAGERMEISTER: 6 Red Bull
+        else if (nome.includes("JAGERMEISTER")) {
+            redbullTotale += (6 * qta);
+        }
+        // 5. MONTENEGRO: 6 Coca-Cola
+        else if (nome.includes("MONTENEGRO")) {
+            cocacolaTotale += (6 * qta);
+        }
+        // 6. TEQUILA: 6 Pompelmo
+        else if (nome.includes("TEQUILA") || nome.includes("TEQUIERO") || nome.includes("PATRON") || nome.includes("AZUL")) {
+            pompelmoTotale += (6 * qta);
+        }
+    }
+    return { tonica: tonicaTotale, lemon: lemonTotale, redbull: redbullTotale, cocacola: cocacolaTotale, pompelmo: pompelmoTotale };
+}
+
 function mostraResocontoLive() {
     const storico = ottieniStoricoBottiglie();
-    let messaggio = "📊 RESOCONTO LIVE BOTTIGLIE USCITE:\n\n";
+    let messaggio = "📊 RESOCONTO LIVE MERCE USCITA:\n\n";
     
     if (Object.keys(storico).length === 0) {
         messaggio += "Nessuna bottiglia è ancora uscita stasera.";
     } else {
+        messaggio += "--- BOTTIGLIE ---\n";
         for (const [bottiglia, qta] of Object.entries(storico)) {
             messaggio += `• ${bottiglia}: ${qta} pz\n`;
         }
+        
+        const softDrink = calcolaSoftDrink(storico);
+        messaggio += "\n--- 🥤 TOTALE SOFT DRINK ---\n";
+        messaggio += `• LEMON SODA: ${softDrink.lemon} lattine\n`;
+        messaggio += `• TONICA: ${softDrink.tonica} lattine\n`;
+        messaggio += `• RED BULL: ${softDrink.redbull} lattine\n`;
+        messaggio += `• COCA-COLA: ${softDrink.cocacola} lattine\n`;
+        messaggio += `• POMPELMO: ${softDrink.pompelmo} lattine\n`;
     }
     alert(messaggio);
 }
@@ -389,8 +444,8 @@ function stampaReportFineSerata() {
 
     const ip = document.getElementById('ip_stampante').value;
     const dataOra = document.getElementById('orologio').innerText;
+    const softDrink = calcolaSoftDrink(storico);
 
-    // CODICE SCONTRINO RILEGATO SOLO TESTUALE (NIENTE CODICI STRANI)
     let reportTesto = "";
     reportTesto += `==========================================\n`;
     reportTesto += `            REPORT FINE SERATA            \n`;
@@ -403,6 +458,13 @@ function stampaReportFineSerata() {
         reportTesto += `[ ] Q.ta: ${qta} - ${bottiglia}\n`;
     }
 
+    reportTesto += `------------------------------------------\n`;
+    reportTesto += `RIEPILOGO CONTEGGIO SOFT DRINK:\n\n`;
+    reportTesto += `[ ] LEMON SODA TOTALE: ${softDrink.lemon} pz\n`;
+    reportTesto += `[ ] TONICA TOTALE:     ${softDrink.tonica} pz\n`;
+    reportTesto += `[ ] RED BULL TOTALE:   ${softDrink.redbull} pz\n`;
+    reportTesto += `[ ] COCA-COLA TOTALE:  ${softDrink.cocacola} pz\n`;
+    reportTesto += `[ ] POMPELMO TOTALE:   ${softDrink.pompelmo} pz\n`;
     reportTesto += `------------------------------------------\n`;
     reportTesto += `            Fine del Report.              \n`;
     reportTesto += `\n\n\n\n\n\n\n`; 
@@ -421,12 +483,12 @@ function stampaReportFineSerata() {
     .then(() => {
         clearTimeout(timeoutId);
         localStorage.removeItem('cambusa_storico_bottiglie');
-        alert("Report stampato! Storico bottiglie azzerato per la prossima serata.");
+        alert("Report stampato! Storico bottiglie e soft drink azzerati per la prossima serata.");
     })
     .catch(() => {
         clearTimeout(timeoutId);
         localStorage.removeItem('cambusa_storico_bottiglie');
-        alert("Report inviato! Storico bottiglie azzerato per la prossima serata.");
+        alert("Report inviato! Storico bottiglie e soft drink azzerati per la prossima serata.");
     });
 }
 
@@ -440,7 +502,6 @@ function inviaOrdine() {
     const note = document.getElementById('note_tavolo').value;
     const dataOra = document.getElementById('orologio').innerText;
 
-    // PULIZIA DELLE SCRITTE STRANE: SOLO TESTO STANDARD SENZA ESC/POS
     let testoScontrino = "";
     testoScontrino += `============= ORDINE CAMBUSA =============\n`;
     testoScontrino += `ORDINE PROGRESSIVO N. ${numeroOrdineCorrente}\n`;
