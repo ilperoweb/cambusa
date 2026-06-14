@@ -85,32 +85,18 @@
             background-color: #00cc6e;
         }
 
-        .hidden {
-            display: none !important;
-        }
-
         #success-msg {
             color: #00ff88;
             margin-top: 15px;
             font-weight: bold;
+            min-height: 20px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Schermata 1: Login Accesso Camerieri -->
-        <div id="login-screen">
-            <h1>Bamboo Login</h1>
-            <div class="form-group">
-                <label for="pin">Inserisci il PIN Cameriere</label>
-                <input type="password" id="pin" placeholder="••••" inputmode="numeric" pattern="[0-9]*">
-            </div>
-            <button onclick="checkLogin()">Accedi</button>
-        </div>
-
-        <!-- Schermata 2: Gestione Tavoli e Comande -->
-        <div id="app-screen" class="hidden">
+        <div id="app-screen">
             <h1>Nuova Comanda</h1>
             
             <div class="form-group">
@@ -141,19 +127,6 @@
     </div>
 
     <script>
-        // Logica di funzionamento dell'app
-        function checkLogin() {
-            const pinInput = document.getElementById('pin').value;
-            
-            // Puoi cambiare '1234' con il PIN reale che preferisci usare
-            if (pinInput === '1234' || pinInput !== '') { 
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('app-screen').classList.remove('hidden');
-            } else {
-                alert('PIN errato. Riprova.');
-            }
-        }
-
         function inviaOrdine() {
             const tavolo = document.getElementById('tavolo').value;
             const ordine = document.getElementById('ordine').value;
@@ -164,13 +137,13 @@
                 return;
             }
 
-            // Qui l'ordine viene elaborato. 
+            // Qui l'ordine viene elaborato dal sistema
             console.log("Ordine inviato per:", tavolo, "Contenuto:", ordine);
 
             // Messaggio di conferma a schermo
             msgDiv.innerText = "Comanda inviata con successo!";
             
-            // Pulisce i campi dopo l'invio
+            // Pulisce i campi dopo l'invio per il tavolo successivo
             document.getElementById('ordine').value = '';
             document.getElementById('tavolo').value = '';
 
