@@ -87,12 +87,10 @@
             background: #00cc6e;
         }
 
-        /* CLASSE PER NASCONDERE I BLOCCHI */
         .hidden {
             display: none !important;
         }
 
-        /* TUO STILE ORIGINALE COPIATO PARI PARI */
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -130,10 +128,6 @@
         .btn-remove { background: #e74c3c; color: white; border: none; font-weight: bold; height: 100%; cursor: pointer; }
         .btn-invia { background: var(--primary); color: white; border: none; font-weight: bold; font-size: 18px; padding: 15px; margin-top: 15px; cursor: pointer; }
         
-        /* BOTTONE RESET PROGRESSIVO ORIGINALE */
-        .btn-reset-progressivo { background: #34495e; color: white; border: none; font-weight: bold; margin-top: 10px; cursor: pointer; }
-
-        /* STILI PER I TASTI REPORT */
         .btn-report-live {
             background-color: #3498db;
             color: white;
@@ -157,6 +151,28 @@
             border-radius: 8px;
         }
 
+        /* STRUTTURA PICCOLA IN BASSO PER I RESET */
+        .sezione-reset-bassa {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+            display: flex;
+            gap: 10px;
+        }
+        .btn-mini-reset {
+            background-color: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-mini-reset:hover {
+            background-color: #c0392b;
+        }
+
         #orologio {
             text-align: center;
             font-weight: bold;
@@ -167,11 +183,13 @@
             padding: 8px;
             border-radius: 6px;
         }
+        #config-stampante {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
 
-<!-- SCHERMATA DI LOGIN -->
 <div id="login-screen">
     <div class="login-container">
         <h1>Bamboo Login</h1>
@@ -181,7 +199,6 @@
     </div>
 </div>
 
-<!-- APP PRINCIPALE -->
 <div class="container hidden" id="main-app">
     <h2>Nuovo Ordine Tavolo</h2>
     
@@ -220,16 +237,17 @@
     <button type="button" class="btn-add" onclick="aggiungiRigaProdotto()">+ Aggiungi Bottiglia</button>
     <button type="button" class="btn-invia" onclick="inviaOrdine()">STAMPA ORDINE</button>
     
-    <!-- IL TASTO DI RESET MANUALE PROGRESSIVO RIPRISTINATO COME ALL'INIZIO -->
-    <button type="button" class="btn-reset-progressivo" onclick="resetProgressivoManuale()">🔄 Reset Numero Progressivo Ordine a 1</button>
-    
-    <!-- SEZIONE PULSANTI REPORT -->
     <div class="row" style="margin-top: 15px;">
         <button type="button" class="btn-report-live" style="flex: 1;" onclick="mostraResocontoLive()">📊 Resoconto Live</button>
         <button type="button" class="btn-report-stampa" style="flex: 1;" onclick="stampaReportFineSerata()">🖨️ Stampa Report Fine Serata</button>
     </div>
 
-    <button type="button" onclick="nuovoOrdine()" style="background-color: #ff4d4d; color: white; margin-top: 15px; padding: 15px; width: 100%; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">❌ Svuota Campi Schermo</button>
+    <button type="button" onclick="pulisciSchermataTavolo()" style="background-color: #e67e22; color: white; margin-top: 15px; padding: 12px; width: 100%; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer;">🧹 Svuota Campi Schermo</button>
+
+    <div class="sezione-reset-bassa">
+        <button type="button" class="btn-mini-reset" style="flex: 1;" onclick="resetOrdiniManuale()">🔄 Reset ordini</button>
+        <button type="button" class="btn-mini-reset" style="flex: 1;" onclick="resetConsumatoManuale()">🗑️ Reset consumato</button>
+    </div>
 </div>
 
 <div id="orologio">Caricamento data e ora...</div>
@@ -333,17 +351,27 @@ aggiungiRigaProdotto();
 
 let numeroOrdineCorrente = parseInt(localStorage.getItem('cambusa_num_progressivo')) || 1;
 
-// FUNZIONE DEDICATA AL RESET DEL PROGRESSIVO
-function resetProgressivoManuale() {
-    if (confirm("Vuoi azzerare il numero d'ordine progressivo e farlo ripartire da 1?")) {
-        numeroOrdineCorrente = 1;
-        localStorage.setItem('cambusa_num_progressivo', 1);
-        alert("Fatto! Il prossimo scontrino stampato sarà l'Ordine N. 1");
+function resetOrdiniManuale() {
+    if (confirm("Sei sicuro di voler azzerare il numero progressivo di tutti gli ordini?")) {
+        if (confirm("Confermi di voler far ripartire la numerazione scontrini da 1?")) {
+            numeroOrdineCorrente = 1;
+            localStorage.setItem('cambusa_num_progressivo', 1);
+            alert("Numero progressivo degli ordini resettato a 1!");
+        }
     }
 }
 
-function nuovoOrdine() {
-    if (confirm("Vuoi svuotare i dati inseriti a schermo?")) {
+function resetConsumatoManuale() {
+    if (confirm("ATTENZIONE! Vuoi azzerare completamente tutta la merce uscita stasera?")) {
+        if (confirm("Questa azione cancellerà lo storico di Bottiglie e Soft Drink. Confermi?")) {
+            localStorage.removeItem('cambusa_storico_bottiglie');
+            alert("Storico dei consumi (bottiglie e soft drink) azzerato con successo!");
+        }
+    }
+}
+
+function pulisciSchermataTavolo() {
+    if (confirm("Vuoi ripulire i dati inseriti a schermo?")) {
         document.getElementById('tavolo').value = '1';
         document.getElementById('tavolo_lettera').value = '';
         if(document.getElementById('nome_tavolo')) document.getElementById('nome_tavolo').value = '';
