@@ -1,200 +1,184 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="it">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invio Ordini Tavoli</title>
+    <style>
+        /* Stile grafico - Schermata Nera Bamboo */
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        h1 {
+            color: #00ff88;
+            font-size: 24px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b3b3b3;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background-color: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #00ff88;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #00ff88;
+            color: #121212;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #00cc6e;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #success-msg {
+            color: #00ff88;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="it"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Invio Ordini Tavoli&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* Stile grafico - Schermata Nera Bamboo */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #121212;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ffffff;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>flex-direction: column;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>min-height: 100vh;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-sizing: border-box;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.container {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>max-width: 450px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #1e1e1e;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 30px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>h1 {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #00ff88;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 24px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 25px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-transform: uppercase;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>letter-spacing: 1px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.form-group {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: left;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>label {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: block;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #b3b3b3;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 14px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>input, select, textarea {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #2a2a2a;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #3a3a3a;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-sizing: border-box;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transition: border-color 0.3s;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>input:focus, select:focus, textarea:focus {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-color: #00ff88;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>outline: none;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>button {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 14px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #00ff88;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #121212;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transition: background-color 0.3s;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>button:hover {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #00cc6e;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.hidden {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: none !important;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>#success-msg {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #00ff88;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Schermata 1: Login Accesso Camerieri --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="login-screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1&gt;Bamboo Login&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="form-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="pin"&gt;Inserisci il PIN Cameriere&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="password" id="pin" placeholder="••••" inputmode="numeric" pattern="[0-9]*"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button onclick="checkLogin()"&gt;Accedi&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Schermata 2: Gestione Tavoli e Comande --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="app-screen" class="hidden"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1&gt;Nuova Comanda&lt;/h1&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="form-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="tavolo"&gt;Seleziona Tavolo&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="tavolo"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value=""&gt;-- Scegli un tavolo --&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Tavolo 1"&gt;Tavolo 1&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Tavolo 2"&gt;Tavolo 2&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Tavolo 3"&gt;Tavolo 3&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Tavolo 4"&gt;Tavolo 4&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Tavolo 5"&gt;Tavolo 5&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Tavolo 6"&gt;Tavolo 6&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Tavolo 7"&gt;Tavolo 7&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Tavolo 8"&gt;Tavolo 8&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Tavolo 9"&gt;Tavolo 9&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Tavolo 10"&gt;Tavolo 10&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="form-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="ordine"&gt;Piatti / Bevande&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;textarea id="ordine" rows="5" placeholder="Es: 2 Primi, 1 Acqua frizzante..."&gt;&lt;/textarea&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button onclick="inviaOrdine()"&gt;Invia in Cucina&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="success-msg"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Logica di funzionamento dell'app</p>
-<p class="p1"><span class="Apple-converted-space">        </span>function checkLogin() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const pinInput = document.getElementById('pin').value;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Puoi cambiare '1234' con il PIN reale che preferisci usare</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (pinInput === '1234' || pinInput !== '') {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>document.getElementById('login-screen').classList.add('hidden');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>document.getElementById('app-screen').classList.remove('hidden');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>alert('PIN errato. Riprova.');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function inviaOrdine() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const tavolo = document.getElementById('tavolo').value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const ordine = document.getElementById('ordine').value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const msgDiv = document.getElementById('success-msg');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (!tavolo || !ordine) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>alert('Per favore, seleziona un tavolo e inserisci i piatti.');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Qui l'ordine viene elaborato.<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>console.log("Ordine inviato per:", tavolo, "Contenuto:", ordine);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Messaggio di conferma a schermo</p>
-<p class="p1"><span class="Apple-converted-space">            </span>msgDiv.innerText = "Comanda inviata con successo!";</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Pulisce i campi dopo l'invio</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('ordine').value = '';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('tavolo').value = '';</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>msgDiv.innerText = '';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}, 3000);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+
+    <div class="container">
+        <!-- Schermata 1: Login Accesso Camerieri -->
+        <div id="login-screen">
+            <h1>Bamboo Login</h1>
+            <div class="form-group">
+                <label for="pin">Inserisci il PIN Cameriere</label>
+                <input type="password" id="pin" placeholder="••••" inputmode="numeric" pattern="[0-9]*">
+            </div>
+            <button onclick="checkLogin()">Accedi</button>
+        </div>
+
+        <!-- Schermata 2: Gestione Tavoli e Comande -->
+        <div id="app-screen" class="hidden">
+            <h1>Nuova Comanda</h1>
+            
+            <div class="form-group">
+                <label for="tavolo">Seleziona Tavolo</label>
+                <select id="tavolo">
+                    <option value="">-- Scegli un tavolo --</option>
+                    <option value="Tavolo 1">Tavolo 1</option>
+                    <option value="Tavolo 2">Tavolo 2</option>
+                    <option value="Tavolo 3">Tavolo 3</option>
+                    <option value="Tavolo 4">Tavolo 4</option>
+                    <option value="Tavolo 5">Tavolo 5</option>
+                    <option value="Tavolo 6">Tavolo 6</option>
+                    <option value="Tavolo 7">Tavolo 7</option>
+                    <option value="Tavolo 8">Tavolo 8</option>
+                    <option value="Tavolo 9">Tavolo 9</option>
+                    <option value="Tavolo 10">Tavolo 10</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ordine">Piatti / Bevande</label>
+                <textarea id="ordine" rows="5" placeholder="Es: 2 Primi, 1 Acqua frizzante..."></textarea>
+            </div>
+
+            <button onclick="inviaOrdine()">Invia in Cucina</button>
+            <div id="success-msg"></div>
+        </div>
+    </div>
+
+    <script>
+        // Logica di funzionamento dell'app
+        function checkLogin() {
+            const pinInput = document.getElementById('pin').value;
+            
+            // Puoi cambiare '1234' con il PIN reale che preferisci usare
+            if (pinInput === '1234' || pinInput !== '') { 
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-screen').classList.remove('hidden');
+            } else {
+                alert('PIN errato. Riprova.');
+            }
+        }
+
+        function inviaOrdine() {
+            const tavolo = document.getElementById('tavolo').value;
+            const ordine = document.getElementById('ordine').value;
+            const msgDiv = document.getElementById('success-msg');
+
+            if (!tavolo || !ordine) {
+                alert('Per favore, seleziona un tavolo e inserisci i piatti.');
+                return;
+            }
+
+            // Qui l'ordine viene elaborato. 
+            console.log("Ordine inviato per:", tavolo, "Contenuto:", ordine);
+
+            // Messaggio di conferma a schermo
+            msgDiv.innerText = "Comanda inviata con successo!";
+            
+            // Pulisce i campi dopo l'invio
+            document.getElementById('ordine').value = '';
+            document.getElementById('tavolo').value = '';
+
+            setTimeout(() => {
+                msgDiv.innerText = '';
+            }, 3000);
+        }
+    </script>
+
 </body>
 </html>
